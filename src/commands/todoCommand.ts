@@ -14,12 +14,6 @@ export const data = new SlashCommandBuilder()
     )
     .addStringOption(option =>
         option
-            .setName('description')
-            .setDescription('Description of the task')
-            .setRequired(true)
-    )
-    .addStringOption(option =>
-        option
             .setName('priority')
             .setDescription('Priority level of the task')
             .setRequired(true)
@@ -28,6 +22,12 @@ export const data = new SlashCommandBuilder()
                 { name: 'Medium', value: 'medium' },
                 { name: 'High', value: 'high' }
             )
+    )
+    .addStringOption(option =>
+        option
+            .setName('description')
+            .setDescription('Description of the task')
+            .setRequired(false)
     )
     .addStringOption(option =>
         option
@@ -44,8 +44,8 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: ChatInputCommandInteraction) {
     const title = interaction.options.getString('title', true);
-    const description = interaction.options.getString('description', true);
     const priority = interaction.options.getString('priority', true).toLowerCase();
+    const description = interaction.options.getString('description') || '';
     const dateInput = interaction.options.getString('date');
     const assignee = interaction.options.getUser('assignee');
 
