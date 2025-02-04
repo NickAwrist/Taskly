@@ -5,9 +5,16 @@ import dotenv from "dotenv";
 const envFile = `.env.${process.env.NODE_ENV || "development"}`;
 dotenv.config({path:envFile});
 
+export const config = {
+    DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+    CLIENT_ID: process.env.CLIENT_ID,
+    MONGO_URI: process.env.MONGO_URI || "",
+    DATABASE_NAME: process.env.DATABASE_NAME || "",
+}
+
 // Ensure the token is present
-if (!process.env.DISCORD_TOKEN) {
-    console.error("Missing DISCORD_TOKEN in .env file");
+if (!config.DISCORD_TOKEN || !config.CLIENT_ID || !config.MONGO_URI || !config.DATABASE_NAME) {
+    console.error("Missing environment variables");
     process.exit(1);
 }
 
@@ -35,7 +42,7 @@ client.on("messageCreate", (message) => {
 });
 
 // Login to Discord
-client.login(process.env.DISCORD_TOKEN).catch((err) => {
+client.login(config.DISCORD_TOKEN).catch((err) => {
     console.error("Failed to login:", err);
     process.exit(1);
 });

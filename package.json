@@ -3,9 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development bun run --watch src/index.ts",
+    "dev": "NODE_ENV=development bun run --watch src/bot.ts",
     "start": "NODE_ENV=production bun run dist/index.js",
-    "build": "bun build src/index.ts --outdir dist"
+    "build": "bun build src/bot.ts --outdir dist"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -16,6 +16,9 @@
   },
   "dependencies": {
     "discord.js": "^14.17.3",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "mongodb": "^6.13.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }
