@@ -11,10 +11,11 @@ export interface Task {
     title: string;
     description: string;
     priority: 'low' | 'medium' | 'high';
-    completed: boolean;
-    date?: string;
+    date?: Date;
     assignee?: string[];
     createdAt: Date;
+    messageId: string;
+    completed: boolean;
     completedAt?: Date;
     shared?: boolean;
 }

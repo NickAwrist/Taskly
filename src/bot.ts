@@ -1,5 +1,7 @@
 import { Client, GatewayIntentBits } from "discord.js";
 import dotenv from "dotenv";
+import {connectToDatabase} from "./database/dbConnection.ts";
+import logger from "./utils/logger.ts";
 
 // Load environment variables from .env file
 const envFile = `.env.${process.env.NODE_ENV || "development"}`;
@@ -14,7 +16,7 @@ export const config = {
 
 // Ensure the token is present
 if (!config.DISCORD_TOKEN || !config.CLIENT_ID || !config.MONGO_URI || !config.DATABASE_NAME) {
-    console.error("Missing environment variables");
+    logger.error("Missing environment variables");
     process.exit(1);
 }
 
@@ -28,21 +30,19 @@ const client = new Client({
 });
 
 // When the bot is ready
-client.once("ready", () => {
-    console.log(`Logged in as ${client.user?.tag}!`);
-});
+client.once("ready", async () => {
+    logger.info('Connecting to MongoDB...');
+    await connectToDatabase(config.MONGO_URI, config.DATABASE_NAME);
+    logger.info('Connected to MongoDB');
 
-// Basic message handler
-client.on("messageCreate", (message) => {
-    if (message.author.bot) return; // Ignore bot messages
 
-    if (message.content.toLowerCase() === "!ping") {
-        message.reply("Pong!");
-    }
+
 });
 
 // Login to Discord
 client.login(config.DISCORD_TOKEN).catch((err) => {
-    console.error("Failed to login:", err);
+    logger.error("Failed to login:", err);
     process.exit(1);
+}).then(() => {
+    logger.info(`Logged in! as  + ${client.user?.tag}`);
 });
