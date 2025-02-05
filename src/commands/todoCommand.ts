@@ -17,7 +17,6 @@ import {
     removeTaskFromUser,
     completeTask, deleteTask
 } from "../database/taskRepository.ts";
-import logger from "../utils/logger.ts";
 
 export const data = new SlashCommandBuilder()
     .setName('todo')
@@ -60,7 +59,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: ChatInputCommandInteraction) {
     const title = interaction.options.getString('title', true);
-    const priority = interaction.options.getString('priority', true).toLowerCase();
+    const priority = interaction.options.getString('priority', true);
     const description = interaction.options.getString('description') || ' ';
     const dateInput = interaction.options.getString('date');
     const assignee = interaction.options.getUser('assignee');
@@ -131,6 +130,13 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
     const messageId = await interaction.fetchReply().then(msg => msg.id);
 
+    let priorityLevel = 0;
+    if(priority === 'medium') {
+        priorityLevel = 1;
+    }else if(priority === 'high') {
+        priorityLevel = 2;
+    }
+
     // Save task with messageId for tracking
     const newTask: Task = {
         _id,
@@ -138,6 +144,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
         title,
         description,
         priority,
+        priorityLevel,
         date,
         assignee: assignee ? [assignee.id] : [],
         createdAt: new Date(),

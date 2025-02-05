@@ -14,6 +14,7 @@ export interface Task {
     title: string;
     description: string;
     priority: 'low' | 'medium' | 'high';
+    priorityLevel: number;
     date?: Date;
     assignee: string[];
     createdAt: Date;
