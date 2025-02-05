@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import {connectToDatabase} from "./database/dbConnection.ts";
 import logger from "./utils/logger.ts";
 import {handleCommands, registerCommands} from "./commandHandler.ts";
+import {handleButtonInteraction} from "./interactions/buttonInteraction.ts";
 
 // Load environment variables from .env file
 const envFile = `.env.${process.env.NODE_ENV || "development"}`;
@@ -32,7 +33,7 @@ const client = new Client({
 
 // When the bot is ready
 client.once("ready", async () => {
-    //await connectToDatabase(config.MONGO_URI, config.DATABASE_NAME);
+    await connectToDatabase(config.MONGO_URI, config.DATABASE_NAME);
 
     logger.info("Registering commands...");
     await registerCommands(config.APPLICATION_ID, config.DISCORD_TOKEN);
@@ -41,7 +42,7 @@ client.once("ready", async () => {
 
     handleInteractions(client);
 
-    logger.info(`Logged in! as  + ${client.user?.tag}`);
+    logger.info(`Logged in as ${client.user?.tag}`);
 });
 
 // Login to Discord
@@ -55,6 +56,8 @@ export const handleInteractions = (client: Client): void => {
     client.on('interactionCreate', async (interaction: Interaction) => {
         if(interaction.isCommand()){
             await handleCommands(interaction);
+        }else if(interaction.isButton()){
+            await handleButtonInteraction(interaction);
         }
     });
 }

@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb';
+import {Collection, type ObjectId} from 'mongodb';
 import type {User} from '../types';
 import { connectToDatabase} from "./dbConnection";
 import { config } from "../bot";
@@ -19,11 +19,26 @@ export const getAllUsers = async (): Promise<User[]> => {
     return await usersCollection.find({}).toArray();
 };
 
+// Function to get a user by their Discord ID
+export const getUserById = async (discordId: string): Promise<User | null> => {
+    await initUsersCollection();
+    return await usersCollection.findOne({ discord_id: discordId });
+}
+
+// Function to add a completed task to a user
+export const addCompletedTask = async (discordId: string, taskId: ObjectId): Promise<void> => {
+    await initUsersCollection();
+    await usersCollection.updateOne(
+        { discord_id: discordId },
+        { $addToSet: { completed_tasks: taskId }, $inc: { tasks_completed: 1 }},
+    );
+}
+
 // Function to save a user. This will upsert the user if it already exists
 export const saveUser = async (user: User): Promise<void> => {
     await initUsersCollection();
-    await usersCollection.updateOne({
-            discord_id: user.discord_id},
+    await usersCollection.updateOne(
+        {discord_id: user.discord_id},
         {$set: user},
         {upsert: true}
     );
