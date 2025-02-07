@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  todo_discord_bot:
+    container_name: todo_discord_bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    volumes:
+      - .:/usr/src/app:delegated
+      - /usr/src/app/node_modules
+      - /usr/src/app/dist
+    command: ["bun", "run", "start"]
+    restart: unless-stopped
