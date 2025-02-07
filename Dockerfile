@@ -4,8 +4,8 @@ FROM oven/bun:1.2.2
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package files
-COPY package.json bun.lockb ./
+# Copy the package.json file
+COPY package.json ./
 
 # Install dependencies using Bun
 RUN bun install
