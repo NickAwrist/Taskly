@@ -13,8 +13,5 @@ RUN bun install
 # Copy the rest of the application
 COPY . .
 
-# Build the TypeScript project (optional if you need a build step)
-RUN bun run build
-
 # Command to run the bot
 CMD ["bun", "run", "start"]
